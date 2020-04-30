@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>사용자 등록</title>
+</head>
+<body>
+    <form action="/users/" method="POST">
+        &nbsp;&nbsp;Google ID : {{g_id}}
+        <input type="hidden" name="google_id" value="{{google_id}}"/><br><br>
+        &nbsp;&nbsp;한국 이름 : <input type="text" name="ko_name"/><br><br>
+        &nbsp;&nbsp;영어 이름 : <input type="text" name="en_name"/><br><br>
+        &nbsp;&nbsp;입사일 : <input type="text" name="entry_date" placeholder=" YYYY-MM-DD"/><br><br>
+        &nbsp;&nbsp;<input type="submit" value="제출"/>
+    </form>
+</body>
+</html>

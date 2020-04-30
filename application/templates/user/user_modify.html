@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>사용자 정보 수정</title>
+</head>
+<body>
+    {% set url = "/users/ + user.id %}
+    {% if user.admin == True %}
+        <div>
+            <form action="/users/" method="POST">
+                &nbsp;&nbsp;Google ID : {{g_id}}
+                <input type="hidden" name="google_id" value="{{google_id}}"/><br><br>
+                &nbsp;&nbsp;한국 이름 : {{ko_name}} &nbsp;==> &nbsp; <input type="text" name="ko_name"/><br><br>
+                &nbsp;&nbsp;영어 이름 : {{en_name}} &nbsp;==> &nbsp; <input type="text" name="en_name"/><br><br>
+                &nbsp;&nbsp;입사일 : {{entry_date}} &nbsp;==> &nbsp; <input type="text" name="entry_date"/><br><br>
+                &nbsp;&nbsp;관리자 : {{admin}} &nbsp;==> &nbsp; <input type="text" name="admin"/><br><br>
+                <input type="hidden" name="_method" value="PUT">
+                &nbsp;&nbsp;<input type="submit" value="제출"/>
+            </form>
+        </div>
+    {% else %}
+        <div>
+            <form action="/users/" method="POST">
+                &nbsp;&nbsp;Google ID : {{g_id}}
+                <input type="hidden" name="google_id" value="{{google_id}}"/><br><br>
+                &nbsp;&nbsp;한국 이름 : {{ko_name}} &nbsp;==> &nbsp; <input type="text" name="ko_name"/><br><br>
+                &nbsp;&nbsp;영어 이름 : {{en_name}} &nbsp;==> &nbsp; <input type="text" name="en_name"/><br><br>
+                &nbsp;&nbsp;입사일 : {{entry_date}} &nbsp;==> &nbsp; <input type="text" name="entry_date"/><br><br>
+                <input type="hidden" name="_method" value="PUT">
+                &nbsp;&nbsp;<input type="submit" value="제출"/>
+            </form>
+        </div>
+    {% endif %}
+</body>
+</html>

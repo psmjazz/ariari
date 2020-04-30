@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>회원 선택</title>
+</head>
+<body>
+    <br><br>
+    &nbsp;&nbsp;<strong><span style="font-size: x-large; ">{{title}}</span></strong><br><br><br>
+    {% for x in result %}
+    <div id="name">&nbsp;&nbsp;{{ x }}</div><br>
+    {% endfor %}
+    <br><br>
+
+    {% if target_id == "temp" %}
+        <form>
+            &nbsp;&nbsp;확인할 사용자의 번호 : <input type="text" name="사용자 번호" placeholder="사용자 번호를 입력해 주세요" style="width:200px;height:20px;font-size:15px;">
+            <input type="hidden" name="id" value={{id}}>
+            <input type="submit" formaction="/users/select-user" formmethod="post" value="확인">
+            <br><br>&nbsp;&nbsp;<input type="button" value="메인 페이지" onclick="location.href='/main'"/>
+        </form>
+    {% else %}
+        {% set target_user = "/users/" + target_id %}
+        {% set target_used_vacation = "/users/vacations/" + target_id + "/used" %}
+        {% set target_remain_vacation = "/users/vacations/" + target_id + "/remain" %}
+
+        <form>
+            &nbsp;&nbsp;확인할 사용자의 번호 : {{target_id}}
+            <input type="hidden" name="id" value={{id}}>
+            <input type="hidden" name="사용자 번호" value={{target_id}}>
+            <br><br>
+            &nbsp;&nbsp;<input type="submit" formaction={{target_user}} formmethod="get" value="사용자 정보 확인">&nbsp;&nbsp;
+            &nbsp;&nbsp;<input type="submit" formaction={{target_used_vacation}} formmethod="get" value="사용한 휴가 확인">&nbsp;&nbsp;
+            &nbsp;&nbsp;<input type="submit" formaction={{target_remain_vacation}} formmethod="get" value="남은 휴가 확인">&nbsp;&nbsp;
+            <br><br>&nbsp;&nbsp;<input type="button" value="메인 페이지" onclick="location.href='/main'"/>
+        </form>
+
+    {% endif %}
+
+</body>
+</html>

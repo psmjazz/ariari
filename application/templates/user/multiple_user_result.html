@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>결과</title>
+</head>
+<body>
+    <br><br>
+    &nbsp;&nbsp;<strong><span style="font-size: x-large; ">{{title}}</span></strong><br><br><br>
+    &nbsp;&nbsp;결과 : <br><br>
+    {% for x in result %}
+    <div id="name">&nbsp;&nbsp;&nbsp;&nbsp;{{ x }}</div><br>
+    {% endfor %}
+    <br><br>
+
+    {% set id = id %}
+    {% set url = "/users/" + id %}
+    {% set used_url = "/users/vacations/" + id + "/used" %}
+    {% set remain_url = "/users/vacations/" + id + "/remain" %}
+
+    {% if user.admin == True %}
+        <br>
+        <form>
+            <input type="hidden" name="id" value={{id}}>
+            &nbsp;&nbsp;<input type="submit" formaction={{url}} formmethod="get" value="사용자 정보 확인">&nbsp;&nbsp;
+            &nbsp;&nbsp;<input type="submit" formaction="/users/vacations/used" formmethod="post" value="휴가 동기화">
+            &nbsp;&nbsp;<input type="submit" formaction={{used_url}} formmethod="get" value="사용한 휴가 확인">
+            &nbsp;&nbsp;<input type="submit" formaction={{remain_url}} formmethod="get" value="남은 휴가 확인">&nbsp;&nbsp;
+        </form>
+        <br>
+        <form>
+            <input type="hidden" name="id" value={{id}}>
+            &nbsp;&nbsp;<input type="submit" formaction="/users" formmethod="get" value="전체 사용자 정보 확인">&nbsp;&nbsp;
+            &nbsp;&nbsp;<input type="submit" formaction="/users/vacations/used" formmethod="get" value="사용한 전체 휴가 확인">&nbsp;&nbsp;
+            &nbsp;&nbsp;<input type="submit" formaction="/users/vacations/remain" formmethod="get" value="남은 전체 휴가 확인">&nbsp;&nbsp;
+            <br><br>&nbsp;&nbsp;<input type="submit" formaction="/users/select-user" formmethod="post" value="특정 사용자 확인">&nbsp;&nbsp;
+            &nbsp;&nbsp;<input type="button" value="메인 페이지" onclick="location.href='/main'"/>
+        </form>
+        <br>
+    {% else %}
+        <br>
+        <form>
+            <input type="hidden" name="id" value={{id}}>
+            &nbsp;&nbsp;<input type="submit" formaction={{url}} formmethod="get" value="사용자 정보 확인">&nbsp;&nbsp;
+            &nbsp;&nbsp;<input type="submit" formaction="/users/vacations/used" formmethod="post" value="휴가 동기화">
+            &nbsp;&nbsp;<input type="submit" formaction={{used_url}} formmethod="get" value="사용한 휴가 확인">
+            &nbsp;&nbsp;<input type="submit" formaction={{remain_url}} formmethod="get" value="남은 휴가 확인">&nbsp;&nbsp;
+        </form>
+        <br>
+    {% endif %}
+</body>
+</html>

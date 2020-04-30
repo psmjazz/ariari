@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>일반 사용자</title>
+    <script>
+        async function submitAll(){
+            await delete_vacation();
+            await document.forms['vacation_post'].submit();
+            return true;
+        }
+
+        function delete_vacation(){
+            let url = "https://127.0.0.1:8080/users/vacations/used";
+            let xhr = new XMLHttpRequest();
+            xhr.open("DELETE", url, true);
+            xhr.setRequestHeader("Access-Control-Allow-Origin", url);
+            xhr.setRequestHeader("Access-Control-Allow-Methods", 'DELETE, POST, GET, PUT');
+            xhr.send(null);
+            return true;
+        }
+
+    </script>
+</head>
+<body>
+    <br>
+    &nbsp;&nbsp;<strong><span style="font-size: x-large; ">일반 사용자 메인 페이지</span></strong><br><br>
+    {% set id = id %}
+    {% set url = "/users/" + id %}
+    {% set used_url = "/users/vacations/" + id + "/used" %}
+    {% set remain_url = "/users/vacations/" + id + "/remain" %}
+    <br>
+    <form>
+        <input type="hidden" name="id" value={{id}}>
+        &nbsp;&nbsp;<input type="submit" formaction={{url}} formmethod="get" value="사용자 정보 확인">&nbsp;&nbsp;
+        &nbsp;&nbsp;<input type="submit" formaction="/users/vacations/used" formmethod="post" value="휴가 동기화">&nbsp;&nbsp;
+        &nbsp;&nbsp;<input type="submit" formaction={{used_url}} formmethod="get" value="사용한 휴가 확인">&nbsp;&nbsp;
+        &nbsp;&nbsp;<input type="submit" formaction={{remain_url}} formmethod="get" value="남은 휴가 확인">&nbsp;&nbsp;
+    </form>
+
+</body>
+</html>
