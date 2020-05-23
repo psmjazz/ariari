@@ -205,30 +205,27 @@ class Cutter:
 if __name__ == '__main__':
     cutter = Cutter()
     
-    # for i in range(1, 15):
-    #     if i == 2:
-    #         continue
-    #     file_name = f'input/squat_skeleton_{i}.csv'
-    #     output_prefix = f'output/squat_skeleton_{i}'
-    #     cutter.load_csv(file_name)
-    #     fmax, fmin = cutter.find_cut_frame(['Right Hip', 'Left Hip'], flag = 'up',  plot =False)
-    #     cutter.cut(fmax, fmin, output_prefix)
-    #     # while True:
-    #     #     ok = input('cut? : ')
-    #     #     if ok == 'y' or ok == 'Y':
-    #     #         cutter.cut(fmax, fmin, output_prefix)
-    #     #         break
-    #     #     elif ok == 'n' or ok == 'N':
-    #     #         not_cut.append(i)
-    #     #         break
-    #     #     else:
-    #     #         continue
+    for i in range(15, 19):
+        file_name = f'input/squat_skeleton_{i}.csv'
+        output_prefix = f'output/squat_skeleton_{i}'
+        cutter.load_csv(file_name)
+        fmax, fmin = cutter.find_cut_frame(['Right Hip', 'Left Hip'], flag = 'up',  plot =True)
+        cutter.cut(fmax, fmin, output_prefix)
+        while True:
+            ok = input('cut? : ')
+            if ok == 'y' or ok == 'Y':
+                cutter.cut(fmax, fmin, output_prefix)
+                break
+            elif ok == 'n' or ok == 'N':
+                break
+            else:
+                continue
         
-    file_name = 'input/squat_skeleton_2.csv'
-    output_prefix = 'output/squat_skeleton_2'
-    cutter.load_csv(file_name)
-    # cutter.plot(['Right Hip', 'Left Hip'], 'y')
-    fmax, fmin = cutter.find_cut_frame(['Right Hip', 'Left Hip'], flag = 'up',  beta = 0.9, plot =True)
-    print(fmax, fmin)
+    # file_name = 'input/squat_skeleton_2.csv'
+    # output_prefix = 'output/squat_skeleton_2'
+    # cutter.load_csv(file_name)
+    # # cutter.plot(['Right Hip', 'Left Hip'], 'y')
+    # fmax, fmin = cutter.find_cut_frame(['Right Hip', 'Left Hip'], flag = 'up',  beta = 0.9, plot =True)
+    # print(fmax, fmin)
     
-    cutter.cut(fmax[:2], fmin[:3], output_prefix)
+    # cutter.cut(fmax[:2], fmin[:3], output_prefix)
