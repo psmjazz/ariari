@@ -2,13 +2,12 @@
 종설 프로젝트
 
 ## time series analysis
-대충 됨
+완성
 
 ## posenet-js
-아몰랑
+현재 스켈레톤 점 찍는 것까지 완성
 
 ## openpose-master
-희산아 github에 업데이트좀 해줘 ㅠㅠ
 
 ## 주간 보고 개별 ppt 제출
 화요일 12시 전까지 제출해주세요
