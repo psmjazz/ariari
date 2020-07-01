@@ -6,7 +6,6 @@ Created on Fri May  8 13:38:07 2020
 """
 
 import os
-from scipy import io
 import numpy as np
 import cv2
 from matplotlib import pyplot as plt
@@ -49,7 +48,7 @@ class Cutter:
                 prev_x = 0
                 prev_y = 0
                 for kp in kps:
-                    if kp != kp:
+                    if kp != kp: # nan 처리
                         tmp_x.append(prev_x)
                         tmp_y.append(prev_y)
                     else:
@@ -66,6 +65,15 @@ class Cutter:
         self.coordinate['y'] = np.array(y)
         # 구현 필요 csv 파일 형식에 따라 np.array로
     
+    def save_csv(self, path):
+        if self.modelType == 'MPII':
+            column_of_x = [f'{part} x' for part in self.mpii_key.keys()]
+            column_of_y = [f'{part} y' for part in self.mpii_key.keys()]
+        sk_x = self.coordinate['x'].T
+        sk_y = self.coordinate['y'].T
+        save_df = pd.DataFrame(np.concatenate((sk_x, sk_y), axis = 1), columns = column_of_x+column_of_y)
+        save_df.to_csv(path)
+    
     def plot(self, keypoint_list, plot_coordinate):
         for keypoint in keypoint_list:
             plot_kp = self.coordinate[plot_coordinate][self.mpii_key[keypoint]]
@@ -74,7 +82,7 @@ class Cutter:
         plt.show()
     
     def find_cut_frame(self, keypoint_list, beta = 0.7, 
-                       feature = 'y', flag = 'up', 
+                       feature = 'y', flag = 'up', reducing = True,
                        plot = False, x_plot_range = None, y_plot_range = None):
         interested = np.zeros(self.coordinate[feature].shape[1])
         for kp in keypoint_list:
@@ -86,6 +94,7 @@ class Cutter:
         feature_minima = []
         prev = 0
         
+        # 지수 가중 평균
         weighted_avg = [0]
         for t in range(1, interested.shape[0]):
             curr = beta * weighted_avg[-1] + (1 - beta) * interested[t]
@@ -103,13 +112,14 @@ class Cutter:
                 flag = 'up'
             prev = curr
         
-        # 지수 가중 평균
+        # 편향 보정(bias correction)
         for t in range(1, interested.shape[0]):
             weighted_avg[t] = weighted_avg[t] / (1 - beta**t)
             
         # 예측 지점 최적화
-        feature_maxima, feature_minima = self.retudction(feature_maxima, feature_minima)
-        
+        if reducing:
+            feature_maxima, feature_minima = self.reduction(feature_maxima, feature_minima)
+
         if(plot):
             plt.plot(interested, label = 'interested')
             plt.plot(weighted_avg[1:], label = 'weighted')
@@ -127,7 +137,7 @@ class Cutter:
         
         return feature_maxima, feature_minima
     
-    def retudction(self, listA, listB):
+    def reduction(self, listA, listB):
         posA = 0
         posB = 0
         resultA =[]
@@ -205,21 +215,25 @@ class Cutter:
 if __name__ == '__main__':
     cutter = Cutter()
     
-    for i in range(15, 19):
-        file_name = f'input/squat_skeleton_{i}.csv'
-        output_prefix = f'output/squat_skeleton_{i}'
-        cutter.load_csv(file_name)
-        fmax, fmin = cutter.find_cut_frame(['Right Hip', 'Left Hip'], flag = 'up',  plot =True)
-        cutter.cut(fmax, fmin, output_prefix)
-        while True:
-            ok = input('cut? : ')
-            if ok == 'y' or ok == 'Y':
-                cutter.cut(fmax, fmin, output_prefix)
-                break
-            elif ok == 'n' or ok == 'N':
-                break
-            else:
-                continue
+    cutter.load_csv('./input/squat_skeleton_1.csv')
+    cutter.plot(['Head', 'Left Shoulder', 'Right Hip'], 'y')
+    cutter.find_cut_frame(['Right Hip', 'Left Hip'], flag = 'up', reducing = True, plot=True)
+    
+    # for i in range(1, 19):
+    #     file_name = f'input/squat_skeleton_{i}.csv'
+    #     output_prefix = f'output/squat_skeleton_{i}'
+    #     cutter.load_csv(file_name)
+    #     fmax, fmin = cutter.find_cut_frame(['Right Hip', 'Left Hip'], flag = 'u',  plot =True)
+    #     cutter.cut(fmax, fmin, output_prefix)
+    #     while True:
+    #         ok = input('cut? : ')
+    #         if ok == 'y' or ok == 'Y':
+    #             cutter.cut(fmax, fmin, output_prefix)
+    #             break
+    #         elif ok == 'n' or ok == 'N':
+    #             break
+    #         else:
+    #             continue
         
     # file_name = 'input/squat_skeleton_2.csv'
     # output_prefix = 'output/squat_skeleton_2'
@@ -228,4 +242,3 @@ if __name__ == '__main__':
     # fmax, fmin = cutter.find_cut_frame(['Right Hip', 'Left Hip'], flag = 'up',  beta = 0.9, plot =True)
     # print(fmax, fmin)
     
-    # cutter.cut(fmax[:2], fmin[:3], output_prefix)
