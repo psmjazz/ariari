@@ -122,7 +122,7 @@ var skeleton = [
     // estimateSinglePose가 된 프레임만 그리기 위해서
     // 원래는 video도 estimateSinglePose에 넣을 수 있는데
     // 왠진 몰라도 예측이 안됨 예: x = 0, y = 0로만 나옴
-    const pose = await net.estimateSinglePose(image, flipHorizontal = true, outputStride = 8);
+    const pose = await net.estimateSinglePose(image, scaleFactor = 1, flipHorizontal = true, outputStride = 8);
     // draw_sk가 하는 일 : canvas에 video 이미지 그리기, 스켈레톤 그리기
     console.dir(pose)
     

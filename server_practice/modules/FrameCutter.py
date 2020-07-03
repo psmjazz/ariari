@@ -5,8 +5,8 @@ from matplotlib import pyplot as plt
 import pandas as pd
 
 class FrameCutter:
-    def __init__(self, keypoint_list, modelType = 'MPII', min_score = 0.5, beta = 0.85,
-                feature = 'y', error = 50):
+    def __init__(self, keypoint_list, modelType = 'MPII', num_action = 3, min_score = 0.5, partial_min_score = 0.5,
+                beta = 0.7, feature = 'y', mask = 5, threshold = 10, error = 70):
         self.modelType = modelType
         
         if(self.modelType == 'MPII'):
@@ -29,15 +29,18 @@ class FrameCutter:
                             'leftHip':'Left Hip', 'rightHip':'Right Hip', 'leftKnee':'Left Knee',
                             'rightKnee' : 'Right Knee', 'leftAnkle':'Left Ankle', 'rightAnkle':'Right Ankle'}
     
-        self.min_score = min_score
+        self.num_action = num_action # 운동의 구분동작
+
+        self.min_score = min_score # 키포인트 전체 정확도
+        self.partial_min_score = partial_min_score # 키포인트 하나의 정확도
         self.frame = []  # need_init
         self.keypoint_list = keypoint_list
         self.feature = feature
         self.beta = beta
 
         self.tape = {'value' :[], 'gradient':[]} # need_init
-        self.mask = 5
-        self.threshold = 5
+        self.mask = mask
+        self.threshold = threshold
         self.features = [] # need_init
 
         self.prev = 0 # need_init
@@ -53,7 +56,7 @@ class FrameCutter:
         # 관심 부위들의 평균을 사용
         interested = 0
         for kp in self.keypoint_list:
-            if frame_json['keypoints'][self.posenet_key[kp]]['score'] < self.min_score:
+            if frame_json['keypoints'][self.posenet_key[kp]]['score'] < self.partial_min_score:
                 return
             interested += frame_json['keypoints'][self.posenet_key[kp]]['position'][self.feature]
         interested /= len(self.keypoint_list)
@@ -61,13 +64,13 @@ class FrameCutter:
 
         #지수 가중 평균
         curr = self.beta * self.prev + (1 - self.beta) * interested
+        # 편향 보정
         curr_corr = curr / (1 - self.beta**self.time)
         if(self.time > 1):
             self.tape['gradient'].append(curr_corr - self.prev_corr)
             self.tape['value'].append(curr_corr)
         else:
             self.features.append(curr_corr)
-        # print(curr)
         self.prev = curr
         self.prev_corr = curr_corr
         self.time+=1
@@ -75,13 +78,13 @@ class FrameCutter:
     def check_rep(self):
         if(len(self.tape['gradient']) < self.mask):
             return False
-        if (sum(self.tape['gradient'][-self.mask:]) < self.threshold 
+        if (abs(sum(self.tape['gradient'][-self.mask:])) < self.threshold 
             and abs(self.features[-1] - self.tape['value'][-1]) > self.error):
+            print(self.tape['gradient'][-self.mask:], abs(sum(self.tape['gradient'][-self.mask:])))
             self.features.append(self.tape['value'][-1])
-        if(len(self.features) < 3):
+        if(len(self.features) < self.num_action):
             return False
         else:
-            # print(self.features)
             return True
 
     def initialize(self):
@@ -102,7 +105,6 @@ class FrameCutter:
             for kp in self.keypoint_list:
                 new_data.append(data['keypoints'][self.posenet_key[kp]]['position'][self.feature])
             df.loc[i] = new_data
-        # print(df)
         df.to_csv(path)
     
     def get_frames(self):
