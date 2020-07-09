@@ -1,0 +1,46 @@
+<html>
+  <head>
+    <!-- Load TensorFlow.js -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs/dist/tf.min.js"></script>
+    <!-- Load Posenet -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/posenet"></script>
+ </head>
+
+  <body>
+    <img id='cat' src="https://img.theqoo.net/img/WYIEC.jpg", crossorigin="anonymous"/>
+    <canvas id='canvas' width = "1000" height="1000"></canvas>
+  </body>
+  <!-- Place your code in the script tag below. You can also use an external .js file -->
+  <script>
+    var flipHorizontal = false;
+    console.log(document.URL)
+    var imageElement = document.getElementById('cat');
+    var canvas = document.getElementById('canvas');
+    var context = canvas.getContext('2d');
+    
+    function draw_sk(ctx, pose, score = 0.5){
+      // console.log(pose)
+      
+      if(pose['score'] < 0.5){
+        return
+      }
+      pose['keypoints'].forEach(function(keypoint, idx){
+        // console.log(keypoint)
+        pos = keypoint['position']
+        ctx.fillRect(pos['x']-5, pos['y']-5, 10, 10)
+      });
+      
+    }
+    context.drawImage(imageElement, 0, 0, imageElement.clientWidth, imageElement.clientHeight)
+    posenet.load().then(function(net) {
+      const pose = net.estimateSinglePose(imageElement, {
+        flipHorizontal: false
+      });
+      return pose;
+    }).then(function(pose){
+      console.log(pose);
+      draw_sk(context, pose)
+    })
+    
+  </script>
+</html>
