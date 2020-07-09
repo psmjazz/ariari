@@ -28,7 +28,10 @@ google = "*"
 oauth2client = "*"
 pyopenssl = "*"
 arrow = "*"
-mysqlclient = "*"
 
 [requires]
 python_version = "3.7.5"
+numpy = "*"
+
+[requires]
+python_version = "3.8"

@@ -47,6 +47,13 @@ def clear_credentials():
     return 'Credentials have been cleared.<br><br>' + print_index_table()
 
 
+@google_api_bp.route('/logout')
+def logout_credentials():
+    if 'credentials' in session:
+        del session['credentials']
+
+    return render_template('homepage/index.html', user_name=None)
+
 @google_api_bp.route('/authenticate-token')
 def user_auth():
     cred = session['credentials']
@@ -59,6 +66,7 @@ def user_auth():
     google_id = id_info.get('email')
 
     session['google_id'] = google_id
+    session['user_name'] = id_info.get('name')
 
     return redirect(url_for('main'))
 

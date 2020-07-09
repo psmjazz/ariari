@@ -35,6 +35,10 @@ def create_app(mode='dev'):
     from application.views.remain_vacation import remain_vacation_bp
     app.register_blueprint(remain_vacation_bp)
 
+    import numpy as np
+
+    os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
+
     from application.views.google_api import google_api_bp
     app.register_blueprint(google_api_bp)
 
@@ -42,6 +46,7 @@ def create_app(mode='dev'):
 
     @app.route('/')
     def init():
+
         return print_index_table()
 
     @app.route('/main')
@@ -58,6 +63,29 @@ def create_app(mode='dev'):
             return render_template('main_page/admin_user_main.html', id=str(user.id))
         elif not user.admin:
             return render_template('main_page/general_user_main.html', id=str(user.id))
+
+        return render_template('homepage/index.html', user_name=None)
+
+    @app.route('/<path:name>')
+    def routing(name):
+        path = 'homepage/' + str(name) + '.html'
+
+        if 'user_name' in session:
+            user_name = session['user_name']
+        else:
+            user_name = None
+
+        return render_template(path, user_name=user_name)
+
+    @app.route('/main')
+    def main():
+        if 'google_id' not in session and 'user_name' not in session:
+            return redirect(url_for('google_api.authorize'))
+
+        google_id = session['google_id']
+        user_name = session['user_name']
+
+        return render_template('homepage/index.html', user_name=user_name)
 
     return app
 

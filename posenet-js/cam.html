@@ -1,0 +1,27 @@
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <tilte>Test</tilte>
+        <!-- Load TensorFlow.js -->
+        <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs/dist/tf.min.js"></script>
+        <!-- Load Posenet -->
+        <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/posenet"></script>
+        <style>
+            .booth{
+                width: 800px;
+                background: #ccc;
+                border: 10px solid #ddd;
+                margin: 0 auto;
+            }
+        </style>
+    </head>
+    <body>
+        <div class = "booth">  
+            <!-- <video id = "video" width = "640" height="480" autoplay></video> -->
+            <canvas id = "canvas" width = "640" height="480"></canvas>
+            <!-- <canvas id = "canvas2" width = "640" height="480"></canvas> -->
+            <button id = "stop">stop</button>
+        </div>
+        <script src="./javascripts/cam_script.js"></script>
+    </body>
+</html>
