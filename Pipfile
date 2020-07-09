@@ -29,6 +29,7 @@ oauth2client = "*"
 pyopenssl = "*"
 arrow = "*"
 numpy = "*"
+flask-socketio = "*"
 
 [requires]
 python_version = "3.8"

@@ -4,12 +4,14 @@ from flask_marshmallow import Marshmallow, pprint
 from flask_migrate import Migrate
 from flask_restful import Api
 from application.views.google_api import print_index_table
+from flask_socketio import SocketIO
 import os
 
 
 db = SQLAlchemy()
 ma = Marshmallow()
 migrate = Migrate()
+socketio = SocketIO()
 api = Api
 
 
@@ -23,8 +25,7 @@ def create_app(mode='dev'):
     db.init_app(app)
     ma.init_app(app)
     migrate.init_app(app, db)
-
-    import numpy as np
+    socketio.init_app(app)
 
     os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
 
@@ -32,6 +33,10 @@ def create_app(mode='dev'):
     app.register_blueprint(google_api_bp)
 
     from application.models.user import User
+
+    @app.route('/playing')
+    def input_video():
+        return render_template('cam.html')
 
     @app.route('/')
     def init():
