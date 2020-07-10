@@ -1,8 +1,8 @@
 import numpy as np
-import cv2
-from matplotlib import pyplot as plt
+# import cv2
+# from matplotlib import pyplot as plt
 
-import pandas as pd
+# import pandas as pd
 
 class FrameCutter:
     def __init__(self, keypoint_list, modelType = 'MPII', num_action = 3, min_score = 0.5, partial_min_score = 0.5,
@@ -97,15 +97,15 @@ class FrameCutter:
         self.prev = 0
         self.time = 1
     
-    def save_csv(self, path):
+    # def save_csv(self, path):
 
-        df = pd.DataFrame(columns = self.keypoint_list)
-        for i, data in enumerate(self.frame):
-            new_data = []
-            for kp in self.keypoint_list:
-                new_data.append(data['keypoints'][self.posenet_key[kp]]['position'][self.feature])
-            df.loc[i] = new_data
-        df.to_csv(path)
+    #     df = pd.DataFrame(columns = self.keypoint_list)
+    #     for i, data in enumerate(self.frame):
+    #         new_data = []
+    #         for kp in self.keypoint_list:
+    #             new_data.append(data['keypoints'][self.posenet_key[kp]]['position'][self.feature])
+    #         df.loc[i] = new_data
+    #     df.to_csv(path)
     
     def get_frames(self):
         return self.frame

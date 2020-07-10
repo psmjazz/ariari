@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, session, current_app
 from flask_socketio import SocketIO
 
-import modules.FrameCutter as fc
+import application.modules.FrameCutter as fc
 
 socketio = SocketIO()
 user_frame = {}
