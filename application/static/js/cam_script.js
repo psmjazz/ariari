@@ -46,7 +46,7 @@ var skeleton = [
 
   var stopButton = document.getElementById('stop');
   var control = true;
-
+  
   context.fillStyle = "red"
   context.lineWidth = 7;
   context.strokeStyle = '#ff0000';
@@ -55,7 +55,7 @@ var skeleton = [
                       navigator.webkitGetUserMedia ||
                       navigator.mozGetuserMedia ||
                       navigator.msGetUserMedia);
-
+  
   navigator.getMedia({
     video: true,
     audio: false
@@ -77,16 +77,22 @@ var skeleton = [
   //   console.log(error)
   // });
 
+  // 비디오 이벤트 리스너
   video.addEventListener('play', function() {
     draw( this, context, tmpctx, width, height );
   }, false );
+  // 스탑버튼 이벤트 리스너
   stopButton.addEventListener('click', function(){
     control = false;
     socket.disconnect();
   }, )
+  // 서버 -> 웹의 정확도 등 수신
+  socket.on('pose-result', function(){
+    console.log('rep!!');
+  })
 
   async function draw_sk(video, context, pose, score = 0.3){
-
+    
     // video 이미지 그리기
     context.drawImage( video, 0, 0, width, height );
     if(pose['score'] < score){
@@ -109,28 +115,28 @@ var skeleton = [
       }
 
     });
-
+    
   }
 
   async function draw( video, context, tmpctx, width, height ) {
     var image;
-
+    
     // 비디오 이미지를 임시 canvas에 그림
     tmpctx.drawImage( video, 0, 0, width, height );
     image = await tmpctx.getImageData( 0, 0, width, height );
-
+    
     // estimateSinglePose가 된 프레임만 그리기 위해서
     // 원래는 video도 estimateSinglePose에 넣을 수 있는데
     // 왠진 몰라도 예측이 안됨 예: x = 0, y = 0로만 나옴
     const pose = await net.estimateSinglePose(image, scaleFactor = 1, flipHorizontal = true, outputStride = 8);
-    // draw_sk가 하는 일 : canvas에 video 이미지 그리기, 스켈레톤 그리기
-    console.dir(pose)
+
+    // console.dir(pose)
 
     // socketio를 통해 스켈레톤 데이터 전달
     socket.emit('skeleton-data', pose);
-
+    // draw_sk가 하는 일 : canvas에 video 이미지 그리기, 스켈레톤 그리기
     draw_sk(video, context, pose, 0.5);
-    console.log('send')
+    // console.log('send')
     if(control)
       setTimeout( draw, 10, video, context, tmpctx, width, height );
   }

@@ -54,6 +54,7 @@ def logout_credentials():
 
     return render_template('homepage/index.html', user_name=None)
 
+
 @google_api_bp.route('/authenticate-token')
 def user_auth():
     cred = session['credentials']
