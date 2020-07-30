@@ -46,7 +46,9 @@ var skeleton = [
 
   var stopButton = document.getElementById('stop');
   var control = true;
-  
+
+  var cntText = document.getElementById('count');
+  var cnt = 0;
   context.fillStyle = "red"
   context.lineWidth = 7;
   context.strokeStyle = '#ff0000';
@@ -89,6 +91,8 @@ var skeleton = [
   // 서버 -> 웹의 정확도 등 수신
   socket.on('pose-result', function(){
     console.log('rep!!');
+    cntText.textContent = cnt;
+    cnt+=1;
   })
 
   async function draw_sk(video, context, pose, score = 0.3){
