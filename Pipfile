@@ -9,7 +9,6 @@ pytest = "*"
 
 [packages]
 flask = "*"
-flask-sqlalchemy = "*"
 flask-marshmallow = "*"
 marshmallow = "*"
 marshmallow-sqlalchemy = "*"
